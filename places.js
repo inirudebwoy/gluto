@@ -18,7 +18,7 @@ var places = [
      menu: "It's a salad club!"},
     {name: 'Wasabi',
      icon: ':sushi:',
-     address: '6-17 Tottenham Court Rd, Fitzrovia, London W1T 1BG https://goo.gl/maps/LWfZWeoGgu32',
+     address: '6-17 Tottenham Court Rd, Fitzrovia, London W1T 1BG https://goo.gl/maps/bE7rgxSM2iT2',
      menu: 'https://www.wasabi.uk.com/food'},
     {name: 'Byron',
      icon: ':hamburger:',
