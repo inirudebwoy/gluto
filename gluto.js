@@ -4,7 +4,6 @@ Gluto
 
 This is a sample Slack bot built with Botkit.
 
-- TODO: Return a list of all added places
 - TODO: Provide details of a place from the list.
         * link to menu
         * most popular meals
@@ -32,22 +31,34 @@ var bot = controller.spawn({
     token: process.env.token
 }).startRTM();
 
-
-// TODO: come up with some better hears
-controller.hears(['random', 'food', 'dunno'], 'direct_message,direct_mention,mention',function(bot, message) {
+controller.hears(['random'], 'direct_message,direct_mention,mention',function(bot, message) {
+    // TODO: conversation, after recommending ask if user likes it
+    // save it for later so it can be used when recommending
     bot.reply(message, "Why don't you go to " + places.random());
 });
 
-controller.hears(['recommend something', 'recommend'], 'direct_message,direct_mention,mention',function(bot, message) {
+controller.hears(['recommend'], 'direct_message,direct_mention,mention',function(bot, message) {
     bot.reply(message, "I'd recommend " + places.recommend());
 });
 
 controller.hears(['all places', 'everything'], 'direct_message,direct_mention,mention', function(bot, message) {
     bot.reply(message, "This is the list of all places to choose from: ");
-    for (var i = 0; i < places.places.length; i++) {
-        bot.reply(message, places.places[i]);
-    }
+    places.locations.forEach(function(item) {
+        bot.reply(message, item);
+    });
     bot.reply(message, "Why don't you go to " + places.random());
+});
+
+controller.hears(['details'], 'direct_message,direct_mention,mention', function(bot, message) {
+    var matches = /([a-zA-Z]*)\ ([a-zA-Z\ ]*)/.exec(message.text);
+    if (matches !== null) {
+        var details = places.details(matches[2]);
+        details.forEach(function(item) {
+            bot.reply(message, item);
+        });
+    } else {
+        bot.reply(message, "I am sorry but I didn't get that. Try again.");
+    }
 });
 
 controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function(bot, message) {
