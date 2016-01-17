@@ -4,13 +4,14 @@ Gluto
 
 This is a sample Slack bot built with Botkit.
 
-- TODO: Voting on place to eat, each user can cast one vote where he would like to
-eat
 - TODO: Return a list of all added places
 - TODO: Provide details of a place from the list.
         * link to menu
         * most popular meals
         * address
+- TODO: Voting on place to eat, each user can cast one vote where he would like to
+eat
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 
@@ -20,6 +21,7 @@ if (!process.env.token) {
 }
 
 var Botkit = require('botkit');
+var places = require('./places');
 var os = require('os');
 
 var controller = Botkit.slackbot({
@@ -31,15 +33,22 @@ var bot = controller.spawn({
 }).startRTM();
 
 
-// TODO: come up with some better names
-controller.hears(['random', 'food'], 'direct_message,direct_mention,mention',function(bot, message) {
-
-    var places = ['El Burrito', 'The Cafe', 'Papaya', 'Tesco', 'Wasabi', 'Byron',
-                  'Pizza Express', 'Wahaca'];
-    bot.reply(message, "I'd recommend " + places[Math.floor(Math.random() * places.length)]);
-
+// TODO: come up with some better hears
+controller.hears(['random', 'food', 'dunno'], 'direct_message,direct_mention,mention',function(bot, message) {
+    bot.reply(message, "Why don't you go to " + places.random());
 });
 
+controller.hears(['recommend something', 'recommend'], 'direct_message,direct_mention,mention',function(bot, message) {
+    bot.reply(message, "I'd recommend " + places.recommend());
+});
+
+controller.hears(['all places', 'everything'], 'direct_message,direct_mention,mention', function(bot, message) {
+    bot.reply(message, "This is the list of all places to choose from: ");
+    for (var i = 0; i < places.places.length; i++) {
+        bot.reply(message, places.places[i]);
+    }
+    bot.reply(message, "Why don't you go to " + places.random());
+});
 
 controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function(bot, message) {
 
