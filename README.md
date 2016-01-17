@@ -12,7 +12,7 @@ You need Slack.
 Gluto is a bot, you can talk to him directly.
 Just use one of the commands below:
 
-* random - bot selects random location
-* recommend - bot recommends location based on some information
-* details <name> - bot prints details about chosen (<name>) location
-* all places - bot lists every location in database
+* `random` - bot selects random location
+* `recommend` - bot recommends location based on some information
+* `details name` - bot prints details about chosen `name` location
+* `all places` - bot lists every location in database
