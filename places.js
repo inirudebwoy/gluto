@@ -37,30 +37,30 @@ var places = [
      menu: 'http://www.thejapanesecanteen.co.uk/menu.html',
      address: '162 Tottenham Court Rd, London W1T 7NW https://goo.gl/maps/TX7pBrWtDNA2'}];
 
-exports.locations = listAll();
-exports.random = random;
-exports.recommend = recommend;
+exports.locations = listAllNames(places);
+exports.random = random(places);
+exports.recommend = recommend(places);
+// TODO: curry this function?
 exports.details = details;
 
-function listAll() {
-    return places.reduce(function(previousValue, currentValue, currentIndex, array) {
+function listAllNames(placesList) {
+    return placesList.reduce(function(previousValue, currentValue, currentIndex, array) {
         previousValue.push(currentValue.name);
         return previousValue;
     }, []);
 }
 
-function recommend() {
-    return random();
+function recommend(list) {
+    return random(list);
 }
 
-function random() {
-    var list = listAll();
+function random(list) {
     return list[Math.floor(Math.random() * list.length)];
 }
 
-function details(name) {
+function details(name, placesList) {
     // TODO: maybe try to add new place if name is not found
-    var match = places.filter(function(item) {
+    var match = placesList.filter(function(item) {
         return item.name.toLowerCase() === name.toLowerCase()
     });
 
