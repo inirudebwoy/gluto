@@ -31,7 +31,7 @@ var bot = controller.spawn({
     token: process.env.token
 }).startRTM();
 
-controller.hears(['help'], 'direct_message', function(bot, message) {
+controller.hears(['help'], 'direct_message,direct_mention,mention', function(bot, message) {
     bot.reply(message, 'Available commands:');
     bot.reply(message, '`random` -  I select random location for you');
     bot.reply(message, '`recommend` - I can recommend you location based on your preference');
