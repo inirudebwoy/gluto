@@ -31,6 +31,14 @@ var bot = controller.spawn({
     token: process.env.token
 }).startRTM();
 
+controller.hears(['help'], 'direct_message', function(bot, message) {
+    bot.reply(message, 'Available commands:');
+    bot.reply(message, '`random` -  I select random location for you');
+    bot.reply(message, '`recommend` - I can recommend you location based on your preference');
+    bot.reply(message, '`details name` - I tell you details of selected location');
+    bot.reply(message, '`all places` - I tell you all the locations I know');
+});
+
 controller.hears(['random'], 'direct_message,direct_mention,mention',function(bot, message) {
     // TODO: conversation, after recommending ask if user likes it
     // save it for later so it can be used when recommending
