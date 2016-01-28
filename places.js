@@ -38,8 +38,8 @@ var places = [
      address: '162 Tottenham Court Rd, London W1T 7NW https://goo.gl/maps/TX7pBrWtDNA2'}];
 
 exports.locations = listAllNames(places);
-exports.random = random(places);
-exports.recommend = recommend(places);
+exports.random = random;
+exports.recommend = recommend;
 // TODO: curry this function?
 exports.details = details;
 
@@ -50,15 +50,27 @@ function listAllNames(placesList) {
     }, []);
 }
 
-function recommend(list) {
+function random() {
+    return _random(places);
+}
+
+function recommend() {
+    return _recommend(places);
+}
+
+function details(name) {
+    return _details(name, places);
+}
+
+function _recommend(list) {
     return random(list);
 }
 
-function random(list) {
-    return list[Math.floor(Math.random() * list.length)];
+function _random(list) {
+    return list[Math.floor(Math.random() * list.length)].name;
 }
 
-function details(name, placesList) {
+function _details(name, placesList) {
     // TODO: maybe try to add new place if name is not found
     var match = placesList.filter(function(item) {
         return item.name.toLowerCase() === name.toLowerCase()
