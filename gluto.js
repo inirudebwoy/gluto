@@ -5,11 +5,12 @@ Gluto
 This is a sample Slack bot built with Botkit.
 
 - TODO: Provide details of a place from the list.
-        * link to menu
         * most popular meals
-        * address
 - TODO: Voting on place to eat, each user can cast one vote where he would like to
 eat
+- TODO: conversation, after recommending ask if user likes it
+        save it for later so it can be used when recommending
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -40,8 +41,6 @@ controller.hears(['help'], 'direct_message,direct_mention,mention', function(bot
 });
 
 controller.hears(['random'], 'direct_message,direct_mention,mention',function(bot, message) {
-    // TODO: conversation, after recommending ask if user likes it
-    // save it for later so it can be used when recommending
     bot.reply(message, "Why don't you go to " + places.random());
 });
 

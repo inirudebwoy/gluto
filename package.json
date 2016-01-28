@@ -4,9 +4,12 @@
     "description": "Helps figuring out what to eat for lunch",
     "main": "gluto.js",
     "dependencies": {"botkit": ">=0.0.5"},
-    "devDependencies": {},
+    "devDependencies": {"mocha": ">=2.3.4"},
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "mocha"
+    },
+    "bugs": {
+        "url": "https://github.com/inirudebwoy/gluto/issues"
     },
     "author": "michal@michalklich.com",
     "license": "GPL-2.0",
