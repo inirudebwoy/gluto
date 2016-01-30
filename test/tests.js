@@ -1,28 +1,22 @@
-var assert = require('assert');
-describe('Array', function() {
-  describe('#indexOf()', function () {
-    it('should return -1 when the value is not present', function () {
-      assert.equal(-1, [1,2,3].indexOf(5));
-      assert.equal(-1, [1,2,3].indexOf(0));
-    });
-  });
-});
-
+var should = require('should');
 var places = require('../places');
 
 describe('places', function() {
     describe('listAllNames()', function() {
         it('should return empty array if argument is empty array', function() {
-            assert.equal(places.listAllNames([]), []);
+            places.listAllNames([]).should.deepEqual([]);
         });
+        it('should return array of names if array of objects is passed as argument',
+           function() {
+               var input = [{name: 'Pet Shop'}, {name: 'Cheese Shop'}];
+               var expectedValue = ['Pet Shop', 'Cheese Shop'];
+               places.listAllNames(input).should.deepEqual(expectedValue);
+           });
     });
-    describe('recommend()', function() {
-        assert(true);
-    });
-    describe('random()', function() {
-        assert(true);
-    });
-    describe('details()', function() {
-        assert(true);
-    });
+    // describe('random()', function() {
+    //     assert(false);
+    // });
+    // describe('details()', function() {
+    //     assert(false);
+    // });
 });

@@ -38,6 +38,7 @@ var places = [
      address: '162 Tottenham Court Rd, London W1T 7NW https://goo.gl/maps/TX7pBrWtDNA2'}];
 
 exports.locations = listAllNames(places);
+exports.listAllNames = listAllNames;
 exports.random = random;
 exports.recommend = recommend;
 // TODO: curry this function?
