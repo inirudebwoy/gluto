@@ -53,7 +53,6 @@ controller.hears(['all places', 'everything'], 'direct_message,direct_mention,me
     places.locations.forEach(function(item) {
         bot.reply(message, item);
     });
-    bot.reply(message, "Why don't you go to " + places.random());
 });
 
 controller.hears(['details'], 'direct_message,direct_mention,mention', function(bot, message) {
@@ -115,33 +114,6 @@ controller.hears(['what is my name','who am i'],'direct_message,direct_mention,m
         } else {
             bot.reply(message,'I don\'t know yet!');
         }
-    });
-});
-
-
-controller.hears(['shutdown'],'direct_message,direct_mention,mention',function(bot, message) {
-
-    bot.startConversation(message,function(err, convo) {
-        convo.ask('Are you sure you want me to shutdown?',[
-            {
-                pattern: bot.utterances.yes,
-                callback: function(response, convo) {
-                    convo.say('Bye!');
-                    convo.next();
-                    setTimeout(function() {
-                        process.exit();
-                    },3000);
-                }
-            },
-        {
-            pattern: bot.utterances.no,
-            default: true,
-            callback: function(response, convo) {
-                convo.say('*Phew!*');
-                convo.next();
-            }
-        }
-        ]);
     });
 });
 

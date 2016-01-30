@@ -40,7 +40,6 @@ var places = [
 exports.locations = listAllNames(places);
 exports.random = random;
 exports.recommend = recommend;
-// TODO: curry this function?
 exports.details = details;
 
 function listAllNames(placesList) {
