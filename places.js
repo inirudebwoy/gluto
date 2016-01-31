@@ -38,10 +38,8 @@ var places = [
      address: '162 Tottenham Court Rd, London W1T 7NW https://goo.gl/maps/TX7pBrWtDNA2'}];
 
 exports.locations = listAllNames(places);
-exports.listAllNames = listAllNames;
 exports.random = random;
 exports.recommend = recommend;
-// TODO: curry this function?
 exports.details = details;
 
 function listAllNames(placesList) {
@@ -73,9 +71,7 @@ function _random(list) {
 
 function _details(name, placesList) {
     // TODO: maybe try to add new place if name is not found
-    var match = placesList.filter(function(item) {
-        return item.name.toLowerCase() === name.toLowerCase()
-    });
+    var match = _match(name, placesList);
 
     if (match.length !== 0) {
         var l = match[0];
@@ -85,4 +81,11 @@ function _details(name, placesList) {
     } else {
         return ['Location not found.'];
     }
+}
+
+function _match(name, list) {
+    return list.filter(
+        function(item) {
+            return item.name.toLowerCase() === name.toLowerCase();
+        });
 }
