@@ -4,14 +4,6 @@ Gluto
 
 This is a sample Slack bot built with Botkit.
 
-- TODO: Provide details of a place from the list.
-        * most popular meals
-- TODO: Voting on place to eat, each user can cast one vote where he would like to
-eat
-- TODO: conversation, after recommending ask if user likes it
-        save it for later so it can be used when recommending
-
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 
