@@ -47,6 +47,27 @@ describe('places', function() {
     describe('_match()', function() {
         var _match = places.__get__('_match');
 
+        it('should return empty list if element is not found', function() {
+            var inName = 'cheddar';
+            var inList = [{name: 'Mimolette'}];
+
+            _match(inName, inList).should.deepEqual([]);
+        });
+
+        it('should return list with found element if name where with different case',
+           function() {
+               var inName = 'CheddAR';
+               var inList = [{name: 'Cheddar'}];
+
+               _match(inName, inList).should.deepEqual([{name: 'Cheddar'}]);
+        });
+
+        it('should return list with found element if name had same case', function() {
+            var inName = 'Cheddar';
+            var inList = [{name: 'Cheddar'}];
+
+            _match(inName, inList).should.deepEqual([{name: 'Cheddar'}]);
+        });
     });
 
 });
