@@ -63,13 +63,60 @@ controller.hears(['details'], 'direct_message,direct_mention,mention', function(
 controller.hears(['vote'], 'direct_message,direct_mention', function(bot, message) {
     // TODO: factor out this bit
     var matches = /([a-zA-Z]*)\ ([a-zA-Z\ ]*)/.exec(message.text);
+    var choice = matches[2];
     // check if it is known place
-    // if not ask to try voting again
-    // start voting, print info how to vote
-    // either on channel or by DM
+    if (commands.exists(choice) === null) {
+        // if not ask to try voting again
+        bot.reply(message, "Place does not exist. Try different.")
+    } else {
+        // start voting, print info how to vote
+        var team_data = {vote: {required: 0,  // TODO: take number of logged in people on channel
+                                given: 0,
+                                init: message.user
+                               },
+                         id: 'vote'
+                        };
+        controller.storage.teams.save(team_data, function(err) {
+            bot.reply(message, 'Voting starts.');
+        });
+
+        // save user vote
+        controller.storage.users.get(message.user, function(err, user) {
+            if (!user) {
+                user = {};
+            }
+            var voteCount = user[choice];
+            if (!voteCount) {
+                voteCount = 1;
+            }
+            voteCount += 1;
+            user[choice] = voteCount;
+            controller.storage.users.save(user, function(err, id) {
+                bot.reply(message, 'I will remember your vote.');
+            });
+        });
+
+        // either on channel or by DM
+        bot.startConversation(message, function(err, convo) {
+            // TODO: person who started the vote needs to be named by bot
+            convo.say(message.user + ' started vote for ' + choice);
+            convo.say('You can vote in the channel or by talking directly to me.');
+            convo.say('How to vote you ask?');
+            convo.say('If you agree say: yeah, yup, yes, +1');
+            convo.say('If you disagree say: no, nope, nah, -1, balls');
+            convo.say('or simply don\'t vote');
+        });
+
+    }
     // user responses are matched against database, as conversation can only be
     // with one user, and then saved
+    // team storage has current vote ID, number of votes given and number required
+    // user storage has all his votes with vote IDs
     // saved voting can be used later recommending place to eat.
+});
+
+controller.on('ambient', function(bot, message) {
+    // gather votes here if voting is running
 });
 
 controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function(bot, message) {

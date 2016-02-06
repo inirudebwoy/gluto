@@ -4,7 +4,7 @@ exports.locations = listAllNames(places);
 exports.random = random;
 exports.recommend = recommend;
 exports.details = details;
-
+exports.exists = exists;
 
 function listAllNames(placesList) {
     return placesList.reduce(function(previousValue, currentValue, currentIndex, array) {
@@ -52,4 +52,17 @@ function _match(name, list) {
         function(item) {
             return item.name.toLowerCase() === name.toLowerCase();
         });
+}
+
+function exists(name) {
+    return _exists(name, places);
+}
+
+function _exists(name, list) {
+    var found = _match(name, list);
+    if (found.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
 }

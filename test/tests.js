@@ -1,10 +1,10 @@
 var should = require('should');
 var rewire = require('rewire');
-var places = rewire('../places');
+var commands = rewire('../commands');
 
-describe('places', function() {
+describe('commands', function() {
     describe('listAllNames()', function() {
-        var listAllNames = places.__get__('listAllNames');
+        var listAllNames = commands.__get__('listAllNames');
 
         it('should return empty array if argument is empty array', function() {
             listAllNames([]).should.deepEqual([]);
@@ -18,7 +18,7 @@ describe('places', function() {
     });
 
     describe('_details()', function() {
-        var _details = places.__get__('_details');
+        var _details = commands.__get__('_details');
 
         it('should return text if name is not found in empty array', function() {
             var inName = 'elephant';
@@ -45,7 +45,7 @@ describe('places', function() {
     });
 
     describe('_match()', function() {
-        var _match = places.__get__('_match');
+        var _match = commands.__get__('_match');
 
         it('should return empty list if element is not found', function() {
             var inName = 'cheddar';
@@ -67,6 +67,31 @@ describe('places', function() {
             var inList = [{name: 'Cheddar'}];
 
             _match(inName, inList).should.deepEqual([{name: 'Cheddar'}]);
+        });
+    });
+
+    describe('_exists()', function() {
+        var _exists = commands.__get__('_exists');
+
+        it('should return false for empty array', function() {
+            var inName = 'burrito';
+            var inList = [];
+
+            _exists(inName, inList).should.equal(false);
+        });
+
+        it('should return false for array with an element with different name', function() {
+            var inName = 'burrito';
+            var inList = [{name: 'quesadilla'}];
+
+            _exists(inName, inList).should.equal(false);
+        });
+
+        it('should return true for array with searched element', function() {
+            var inName = 'burrito';
+            var inList = [{name: 'burrito'}];
+
+            _exists(inName, inList).should.equal(true);
         });
     });
 
