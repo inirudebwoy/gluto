@@ -13,7 +13,7 @@ if (!process.env.token) {
 }
 
 var Botkit = require('botkit');
-var places = require('./places');
+var commands = require('./commands');
 var os = require('os');
 
 var controller = Botkit.slackbot({
@@ -33,31 +33,43 @@ controller.hears(['help'], 'direct_message,direct_mention,mention', function(bot
 });
 
 controller.hears(['random'], 'direct_message,direct_mention,mention',function(bot, message) {
-    bot.reply(message, "Why don't you go to " + places.random());
+    bot.reply(message, "Why don't you go to " + commands.random());
 });
 
 controller.hears(['recommend'], 'direct_message,direct_mention,mention',function(bot, message) {
-    bot.reply(message, "I'd recommend " + places.recommend());
+    bot.reply(message, "I'd recommend " + commands.recommend());
 });
 
 controller.hears(['all places', 'everything'], 'direct_message,direct_mention,mention', function(bot, message) {
     bot.reply(message, "This is the list of all places to choose from: ");
-    places.locations.forEach(function(item) {
+    commands.locations.forEach(function(item) {
         bot.reply(message, item);
     });
-    bot.reply(message, "Why don't you go to " + places.random());
+    bot.reply(message, "Why don't you go to " + commands.random());
 });
 
 controller.hears(['details'], 'direct_message,direct_mention,mention', function(bot, message) {
     var matches = /([a-zA-Z]*)\ ([a-zA-Z\ ]*)/.exec(message.text);
     if (matches !== null) {
-        var details = places.details(matches[2]);
+        var details = commands.details(matches[2]);
         details.forEach(function(item) {
             bot.reply(message, item);
         });
     } else {
         bot.reply(message, "I am sorry but I didn't get that. Try again.");
     }
+});
+
+controller.hears(['vote'], 'direct_message,direct_mention', function(bot, message) {
+    // TODO: factor out this bit
+    var matches = /([a-zA-Z]*)\ ([a-zA-Z\ ]*)/.exec(message.text);
+    // check if it is known place
+    // if not ask to try voting again
+    // start voting, print info how to vote
+    // either on channel or by DM
+    // user responses are matched against database, as conversation can only be
+    // with one user, and then saved
+    // saved voting can be used later recommending place to eat.
 });
 
 controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function(bot, message) {
