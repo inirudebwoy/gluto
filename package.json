@@ -2,7 +2,7 @@
     "name": "gluto",
     "version": "0.2.3",
     "description": "Helps figuring out what to eat for lunch",
-    "main": "gluto.js",
+    "main": "main.js",
     "dependencies": {"botkit": "0.0.5"},
     "devDependencies": {"mocha": "2.3.4", "should": "8.2.1", "rewire": "2.5.1"},
     "scripts": {
