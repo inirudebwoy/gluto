@@ -60,13 +60,39 @@ controller.hears(['details'], 'direct_message,direct_mention,mention', function(
     }
 });
 
+controller.hears(['users'], 'direct_message,mention', function(bot, message) {
+    bot.api.users.list({}, function(err, response) {
+        response.members.forEach(function(item) {
+            bot.api.users.getPresence({user: item.id}, function(err, response) {
+                bot.reply(message, response);
+                bot.reply(message, item.id);
+            });
+        });
+    });
+});
+
 controller.hears(['vote'], 'direct_message,direct_mention', function(bot, message) {
-    var choice = commands.extractPlace(message.text);
-    // check if it is known place
-    if (commands.exists(choice) === null) {
-        // if not ask to try voting again
-        bot.reply(message, "Place does not exist. Try different.")
-    } else {
+
+    bot.startConversation(message, function(err, convo) {
+        var choice = commands.extractPlace(message.text);
+        // check if it is known place
+        if (!commands.exists(choice)) {
+            convo.say('I don\'t know this place.');
+            // TODO: try and add the place.
+            // that would require to load the initial state into json storage
+            // so it can be extended
+            convo.ask('What was the name again?', function(response, convo) {
+                if (!commands.exists(response.text)) {
+                    convo.repeat();
+                    convo.next();
+                } else {
+                    choice = commands.extractPlace(response.text);
+                    convo.say('OK, I know this one. Let\'s vote.');
+                    convo.next();
+                }
+            });
+        }
+
         // start voting, print info how to vote
         var team_data = {vote: {required: 0,  // TODO: take number of logged in people on channel
                                 given: 0,
@@ -75,7 +101,7 @@ controller.hears(['vote'], 'direct_message,direct_mention', function(bot, messag
                          id: 'vote'
                         };
         controller.storage.teams.save(team_data, function(err) {
-            bot.reply(message, 'Voting starts.');
+            convo.say(message, 'Voting starts.');
         });
 
         // save user vote
@@ -90,27 +116,25 @@ controller.hears(['vote'], 'direct_message,direct_mention', function(bot, messag
             voteCount += 1;
             user[choice] = voteCount;
             controller.storage.users.save(user, function(err, id) {
-                bot.reply(message, 'I will remember your vote.');
+                convo.say(message, 'I will remember your vote.');
             });
         });
-
         // either on channel or by DM
-        bot.startConversation(message, function(err, convo) {
-            // TODO: person who started the vote needs to be named by bot
-            convo.say(message.user + ' started vote for ' + choice);
-            convo.say('You can vote in the channel or by talking directly to me.');
-            convo.say('How to vote you ask?');
-            convo.say('If you agree say: yeah, yup, yes, +1');
-            convo.say('If you disagree say: no, nope, nah, -1, balls');
-            convo.say('or simply don\'t vote');
-        });
+        // TODO: person who started the vote needs to be named by bot
+        convo.say(message.user + ' started vote for ' + choice);
+        convo.say('You can vote in the channel or by talking directly to me.');
+        convo.say('How to vote you ask?');
+        convo.say('If you agree say: yeah, yup, yes, +1');
+        convo.say('If you disagree say: no, nope, nah, -1, balls');
+        convo.say('or simply don\'t vote');
 
-    }
-    // user responses are matched against database, as conversation can only be
-    // with one user, and then saved
-    // team storage has current vote ID, number of votes given and number required
-    // user storage has all his votes with vote IDs
-    // saved voting can be used later recommending place to eat.
+
+        // user responses are matched against database, as conversation can only be
+        // with one user, and then saved
+        // team storage has current vote ID, number of votes given and number required
+        // user storage has all his votes with vote IDs
+        // saved voting can be used later recommending place to eat.
+    });
 });
 
 controller.on('ambient', function(bot, message) {
