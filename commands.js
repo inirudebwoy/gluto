@@ -5,6 +5,7 @@ exports.random = random;
 exports.recommend = recommend;
 exports.details = details;
 exports.exists = exists;
+exports.extractPlace = extractPlace;
 
 function listAllNames(placesList) {
     return placesList.reduce(function(previousValue, currentValue, currentIndex, array) {
@@ -65,4 +66,12 @@ function _exists(name, list) {
     } else {
         return false;
     }
+}
+
+function extractPlace(userText) {
+    var matches = /([a-zA-Z]*)\ ([a-zA-Z\ ]*)/.exec(userText);
+    if (matches !== null) {
+        return matches[2];
+    }
+    return null;
 }

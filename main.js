@@ -49,9 +49,9 @@ controller.hears(['all places', 'everything'], 'direct_message,direct_mention,me
 });
 
 controller.hears(['details'], 'direct_message,direct_mention,mention', function(bot, message) {
-    var matches = /([a-zA-Z]*)\ ([a-zA-Z\ ]*)/.exec(message.text);
-    if (matches !== null) {
-        var details = commands.details(matches[2]);
+    var choice = commands.extractPlace(message.text);
+    if (choice !== null) {
+        var details = commands.details(choice);
         details.forEach(function(item) {
             bot.reply(message, item);
         });
@@ -61,9 +61,7 @@ controller.hears(['details'], 'direct_message,direct_mention,mention', function(
 });
 
 controller.hears(['vote'], 'direct_message,direct_mention', function(bot, message) {
-    // TODO: factor out this bit
-    var matches = /([a-zA-Z]*)\ ([a-zA-Z\ ]*)/.exec(message.text);
-    var choice = matches[2];
+    var choice = commands.extractPlace(message.text);
     // check if it is known place
     if (commands.exists(choice) === null) {
         // if not ask to try voting again

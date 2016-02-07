@@ -95,4 +95,23 @@ describe('commands', function() {
         });
     });
 
+    describe('extractPlace', function() {
+
+        it('should return null for empty string', function() {
+            (commands.extractPlace('') === null).should.true;
+        });
+
+        it('should return null for string with one word', function() {
+            (commands.extractPlace('bazinga') === null).should.true;
+        });
+
+        it('should return one word for string with two words', function() {
+            commands.extractPlace('yellow submarine').should.equal('submarine');
+        });
+
+        it('should return two words with string with three words', function() {
+            commands.extractPlace('this is sparta').should.equal('is sparta');
+        });
+    });
+
 });
