@@ -83,13 +83,14 @@ controller.hears(['vote'], 'direct_message,direct_mention', function(bot, messag
             // so it can be extended
             convo.ask('What was the name again?', function(response, convo) {
                 if (!commands.exists(response.text)) {
-                    convo.repeat();
-                    convo.next();
+                    convo.sayFirst('Sorry but I don\'t know this place');
+                    convo.sayFirst('Try voting again.');
+                    convo.stop();
                 } else {
                     choice = commands.extractPlace(response.text);
-                    convo.say('OK, I know this one. Let\'s vote.');
-                    convo.next();
+                    convo.sayFirst('OK, I know this one. Let\'s vote.');
                 }
+                convo.next();
             });
         }
 
@@ -101,7 +102,7 @@ controller.hears(['vote'], 'direct_message,direct_mention', function(bot, messag
                          id: 'vote'
                         };
         controller.storage.teams.save(team_data, function(err) {
-            convo.say(message, 'Voting starts.');
+            convo.say('Voting starts.');
         });
 
         // save user vote
@@ -116,12 +117,13 @@ controller.hears(['vote'], 'direct_message,direct_mention', function(bot, messag
             voteCount += 1;
             user[choice] = voteCount;
             controller.storage.users.save(user, function(err, id) {
-                convo.say(message, 'I will remember your vote.');
+                convo.say('I will remember your vote.');
             });
         });
         // either on channel or by DM
         // TODO: person who started the vote needs to be named by bot
-        convo.say(message.user + ' started vote for ' + choice);
+        convo.say({text: message.user + ' started vote for ' + choice,
+                   channel: 'random'});
         convo.say('You can vote in the channel or by talking directly to me.');
         convo.say('How to vote you ask?');
         convo.say('If you agree say: yeah, yup, yes, +1');
