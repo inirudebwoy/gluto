@@ -61,8 +61,8 @@ controller.hears(['details'], 'direct_message,direct_mention,mention', function(
 });
 
 controller.hears(['users'], 'direct_message,mention', function(bot, message) {
-    bot.api.users.list({}, function(err, response) {
-        response.members.forEach(function(item) {
+    var list = bot.api.users.list({}, function(err, response) {
+        response.members.filter(function(item) {
             bot.api.users.getPresence({user: item.id}, function(err, response) {
                 bot.reply(message, response);
                 bot.reply(message, item.id);
@@ -73,74 +73,56 @@ controller.hears(['users'], 'direct_message,mention', function(bot, message) {
 
 controller.hears(['vote'], 'direct_message,direct_mention', function(bot, message) {
 
-    bot.startConversation(message, function(err, convo) {
-        var choice = commands.extractPlace(message.text);
-        // check if it is known place
-        if (!commands.exists(choice)) {
-            convo.say('I don\'t know this place.');
-            // TODO: try and add the place.
-            // that would require to load the initial state into json storage
-            // so it can be extended
-            convo.ask('What was the name again?', function(response, convo) {
-                if (!commands.exists(response.text)) {
-                    convo.sayFirst('Sorry but I don\'t know this place');
-                    convo.sayFirst('Try voting again.');
-                    convo.stop();
-                } else {
-                    choice = commands.extractPlace(response.text);
-                    convo.sayFirst('OK, I know this one. Let\'s vote.');
-                }
-                convo.next();
-            });
-        }
+    // IDEA;
+    // users vote by providing name of the place where they want to eat.
 
-        // start voting, print info how to vote
-        var team_data = {vote: {required: 0,  // TODO: take number of logged in people on channel
-                                given: 0,
-                                init: message.user
-                               },
-                         id: 'vote'
-                        };
+    bot.startConversation(message, function(err, convo) {
+        var team_data = {votes: [],
+                         id: 'vote',
+                         init: message.user};
+
         controller.storage.teams.save(team_data, function(err) {
             convo.say('Voting starts.');
         });
 
-        // save user vote
-        controller.storage.users.get(message.user, function(err, user) {
-            if (!user) {
-                user = {};
-            }
-            var voteCount = user[choice];
-            if (!voteCount) {
-                voteCount = 1;
-            }
-            voteCount += 1;
-            user[choice] = voteCount;
-            controller.storage.users.save(user, function(err, id) {
-                convo.say('I will remember your vote.');
-            });
+        bot.api.users.info({user: message.user}, function(err, response) {
+            convo.say(response.user.name + ' started the voting.');
+            convo.say('How to vote you ask?');
+            convo.say('Say the name of place where you want to go on the channel or privately to me.');
         });
-        // either on channel or by DM
-        // TODO: person who started the vote needs to be named by bot
-        convo.say({text: message.user + ' started vote for ' + choice,
-                   channel: 'random'});
-        convo.say('You can vote in the channel or by talking directly to me.');
-        convo.say('How to vote you ask?');
-        convo.say('If you agree say: yeah, yup, yes, +1');
-        convo.say('If you disagree say: no, nope, nah, -1, balls');
-        convo.say('or simply don\'t vote');
-
-
-        // user responses are matched against database, as conversation can only be
-        // with one user, and then saved
-        // team storage has current vote ID, number of votes given and number required
-        // user storage has all his votes with vote IDs
-        // saved voting can be used later recommending place to eat.
     });
 });
 
-controller.on('ambient', function(bot, message) {
-    // gather votes here if voting is running
+controller.on('ambient,direct_message', function(bot, message) {
+    controller.storage.teams.get('vote', function(err, team) {
+        // vote is on
+        if (team && commands.exists(message.text)) {
+            var voteIndex = team.votes.findIndex(function(element, index, array) {
+                if (element[0] == message.text) {
+                    return true;}
+                return false;
+            });
+            team[voteIndex] = [message.user, message.text];
+            controller.storage.teams.save(team, function(err) {
+                bot.reply(message, 'OK, I read you. You are voting for ' + message.text);
+            });
+        } else if (team && !commands.exists(message.text)) {
+            bot.reply(message, 'This place is not on the list');
+        }
+    });
+});
+
+controller.on('tick', function() {
+    // handling ticks, might be used for tracking time
+    controller.storage.teams.get('vote', function(err, team) {
+        if (team) {
+            // vote counting
+            // l.forEach(function(x) {counts[x[1]] = (counts[x[1]] || 0) + 1 });
+            console.log('team: ' + team.votes);
+            console.log('id: ' + team.id);
+            console.log('init: ' + team.init)
+        }
+    });
 });
 
 controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function(bot, message) {
