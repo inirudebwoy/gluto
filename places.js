@@ -89,3 +89,17 @@ function _match(name, list) {
             return item.name.toLowerCase() === name.toLowerCase();
         });
 }
+
+function _citymapperLink(endcoord, endname, endadrress) {
+    var url = {protocol: 'https:',
+               slashes: true,
+               auth: null,
+               host: 'citymapper.com',
+               hash: null,
+               hostname: 'citymapper.com',
+               port: null,
+               query: {endcoord: '51.999,19.82',
+                       endname: 'wuj',
+                       endadrress: 'klonowa'},
+               pathname: '/directions'};
+}
