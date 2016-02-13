@@ -79,8 +79,8 @@ describe('places', function() {
 
         it('should return url with an endcoord if passed as argument', function() {
             var endcoord = '51.0,19.0';
-            var url = _clink(endcoord);
-            url.indexOf(encodeURIComponent(endcoord)).should.notEqual(-1);
+            var result = _clink(endcoord);
+            should(result.indexOf(encodeURIComponent(endcoord))).be.not.equal(-1);
         });
 
         it('should return url with all three passed arguments', function() {
@@ -88,9 +88,9 @@ describe('places', function() {
             var endname = 'Chocolate Factory';
             var endaddress = 'End of the long road, ditch';
             var url = _clink(endcoord, endname, endaddress);
-            url.indexOf(encodeURIComponent(endcoord)).should.notEqual(-1);
-            url.indexOf(encodeURIComponent(endname)).should.notEqual(-1);
-            url.indexOf(encodeURIComponent(endaddress)).should.notEqual(-1);
+            should(url.indexOf(encodeURIComponent(endcoord))).be.not.equal(-1);
+            should(url.indexOf(encodeURIComponent(endname))).be.not.equal(-1);
+            should(url.indexOf(encodeURIComponent(endaddress))).be.not.equal(-1);
         });
     });
 });

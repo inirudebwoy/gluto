@@ -37,6 +37,7 @@ var places = [
      menu: 'http://www.thejapanesecanteen.co.uk/menu.html',
      address: '162 Tottenham Court Rd, London W1T 7NW https://goo.gl/maps/TX7pBrWtDNA2'}];
 
+var url = require('url');
 exports.locations = listAllNames(places);
 exports.random = random;
 exports.recommend = recommend;
@@ -90,16 +91,26 @@ function _match(name, list) {
         });
 }
 
-function _citymapperLink(endcoord, endname, endadrress) {
-    var url = {protocol: 'https:',
-               slashes: true,
-               auth: null,
-               host: 'citymapper.com',
-               hash: null,
-               hostname: 'citymapper.com',
-               port: null,
-               query: {endcoord: '51.999,19.82',
-                       endname: 'wuj',
-                       endadrress: 'klonowa'},
-               pathname: '/directions'};
+function _citymapperLink(endcoord, endname, endaddress) {
+    if (typeof(endcoord) === 'undefined') {
+        return null;
+    }
+    var query = {endcoord: endcoord};
+
+    if (typeof(endname) !== 'undefined') {
+        query.endname = endname;
+    }
+    if (typeof(endaddress) !== 'undefined') {
+        query.endaddress = endaddress;
+    }
+
+    return url.format({protocol: 'https:',
+                       slashes: true,
+                       auth: null,
+                       host: 'citymapper.com',
+                       hash: null,
+                       hostname: 'citymapper.com',
+                       port: null,
+                       query: query,
+                       pathname: '/directions'});
 }
