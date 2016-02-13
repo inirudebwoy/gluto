@@ -1,6 +1,6 @@
 {
     "name": "gluto",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "Helps figuring out what to eat for lunch",
     "main": "gluto.js",
     "dependencies": {"botkit": "0.0.5"},
