@@ -70,4 +70,27 @@ describe('places', function() {
         });
     });
 
+    describe('_citymapperLink', function() {
+        var _clink = places.__get__('_citymapperLink');
+
+        it('should return null if not given any arguments', function() {
+            should(_clink()).be.exactly(null);
+        });
+
+        it('should return url with an endcoord if passed as argument', function() {
+            var endcoord = '51.0,19.0';
+            var result = _clink(endcoord);
+            should(result.indexOf(encodeURIComponent(endcoord))).be.not.equal(-1);
+        });
+
+        it('should return url with all three passed arguments', function() {
+            var endcoord = '51.0,19.0';
+            var endname = 'Chocolate Factory';
+            var endaddress = 'End of the long road, ditch';
+            var url = _clink(endcoord, endname, endaddress);
+            should(url.indexOf(encodeURIComponent(endcoord))).be.not.equal(-1);
+            should(url.indexOf(encodeURIComponent(endname))).be.not.equal(-1);
+            should(url.indexOf(encodeURIComponent(endaddress))).be.not.equal(-1);
+        });
+    });
 });
