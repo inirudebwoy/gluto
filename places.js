@@ -96,6 +96,7 @@ function _details(name, placesList) {
 
     if (match.length !== 0) {
         var l = match[0];
+        // TODO: this needs to be secured for objects with missing attributes
         return [`${l.name} ${l.icon}`,
                 'address: ' + l.address,
                 'menu: ' + l.menu,
