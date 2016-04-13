@@ -23,9 +23,11 @@ if (!process.env.token) {
 var Botkit = require('botkit');
 var places = require('./places');
 var os = require('os');
+var request = require('request');
+var gApiToken = process.env.gapitoken;
 
 var controller = Botkit.slackbot({
-    debug: true,
+    debug: true
 });
 
 var bot = controller.spawn({
@@ -68,12 +70,25 @@ controller.hears(['details'], 'direct_message,direct_mention,mention', function(
     }
 });
 
+controller.hears(['near'], 'direct_message,direct_mention,mention', function(bot, message) {
+    var url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=51.5196712,-0.1321799&radius=500&type=restaurant&key=' + gApiToken;
+    var response = request(url, function(error, response, body) {
+        if (response.statusCode === 200) {
+            var data = JSON.parse(body);
+            bot.reply(message, 'This is what I found using Google within 500 meters:');
+            data.results.forEach(function(item) {
+                bot.reply(message, item.name + ' at ' + item.vicinity);
+            });
+        }
+    });
+});
+
 controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function(bot, message) {
 
     bot.api.reactions.add({
         timestamp: message.ts,
         channel: message.channel,
-        name: 'robot_face',
+        name: 'robot_face'
     },function(err, res) {
         if (err) {
             bot.botkit.log('Failed to add emoji reaction :(',err);
