@@ -40,6 +40,7 @@ controller.hears(['help'], 'direct_message,direct_mention,mention', function(bot
     bot.reply(message, '`recommend` - I can recommend you location based on your preference');
     bot.reply(message, '`details name` - I tell you details of selected location');
     bot.reply(message, '`all places` - I tell you all the locations I know');
+    bot.reply(message, '`near` - I show you what places are around the Imag');
 });
 
 controller.hears(['random'], 'direct_message,direct_mention,mention',function(bot, message) {
