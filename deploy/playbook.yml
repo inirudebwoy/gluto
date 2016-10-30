@@ -1,7 +1,6 @@
 - hosts: all
-  become: true
   vars:
-    app_path: /home/vagrant/gluto
+    app_path: /home/ubuntu/gluto
   gather_facts: no
   pre_tasks:
     - raw: sudo apt-get -y install python-simplejson
@@ -12,19 +11,23 @@
       include_vars: token.yml
 
     - name: install base soft
+      become: true
       apt:
         name: git
         update_cache: true
 
     - name: add node 4.x source
+      become: true
       shell: "curl -sL https://deb.nodesource.com/setup_4.x | bash -"
 
     - name: install node 4.x
+      become: true
       apt:
         name: nodejs
         update_cache: true
 
     - name: add gluto systemd service
+      become: true
       template: src=gluto_systemd dest=/etc/systemd/system/gluto.service
 
     - name: pull gluto
@@ -37,4 +40,5 @@
       template: src=run.sh dest={{ app_path }}/run.sh mode=ug=rwx
 
     - name: start gluto
+      become: true
       service: name=gluto state=started enabled=yes
